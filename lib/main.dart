@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ithome_reader/pages/news_list_page.dart';
+import 'package:ithome_reader/pages/list_page.dart';
 
 void main() {
   runApp(const MyApp());

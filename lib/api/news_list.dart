@@ -1,13 +1,14 @@
+import 'dart:convert';
 import 'package:ithome_reader/models/news_list_item.dart';
 import 'package:ithome_reader/util/requests.dart';
 
 Future<List<NewsListItem>> getNewsList({int timestamp = 0}) async {
-  final json = await getJson(
+  final json = jsonDecode(await get(
     'https://m.ithome.com/api/news/newslistpageget?ot=$timestamp',
-  );
+  ));
   final List<dynamic> decoded = json['Result']!;
   final List<NewsListItem> newsList = [];
-  for (Map<String, dynamic> i in decoded) {
+  for (final Map<String, dynamic> i in decoded) {
     if (i['PostDateStr']! != '') {
       newsList.add(NewsListItem.fromJson(i));
     }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as html;
 import 'package:html/parser.dart' as html;
-import 'package:ithome_reader/widget/news_network_image.dart';
-import 'package:ithome_reader/models/news_item.dart';
+import 'package:ithome_reader/models/news_content.dart';
+import 'package:ithome_reader/widget/network_image.dart';
 
 class NewsContent extends StatelessWidget {
   const NewsContent({
@@ -67,7 +67,6 @@ class NewsContent extends StatelessWidget {
     TextStyle textStyle,
   ) {
     final textSpans = <TextSpan>[];
-
     for (final node in nodes) {
       if (node is html.Text) {
         textSpans.add(
@@ -79,7 +78,6 @@ class NewsContent extends StatelessWidget {
       } else if (node is html.Element) {
         final subTextStyle = _getTextStyle(context, node.localName!, textStyle);
         final childTextSpans = _getTextSpans(context, node.nodes, subTextStyle);
-
         textSpans.add(
           TextSpan(
             children: childTextSpans,
@@ -88,7 +86,6 @@ class NewsContent extends StatelessWidget {
         );
       }
     }
-
     return textSpans;
   }
 
@@ -98,77 +95,81 @@ class NewsContent extends StatelessWidget {
         html.parse(htmlString).getElementsByTagName('body').first.nodes;
     nodes.removeLast();
     final textStyle = Theme.of(context).textTheme.bodyLarge!;
-    return CustomScrollView(slivers: [
-      SliverList(
-        delegate: SliverChildListDelegate(
-          [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-              child: SizedBox(
-                height: 32,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: ListView.builder(
-                    // fade out when overflow
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: tags.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 6),
-                        child: Material(
-                          color:
-                              Theme.of(context).colorScheme.secondaryContainer,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Center(
-                              child: Text(
-                                tags[index].keyword,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSecondaryContainer,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                child: SizedBox(
+                  height: 32,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: ListView.builder(
+                      // fade out when overflow
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: tags.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: Material(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: Center(
+                                child: Text(
+                                  tags[index].keyword,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondaryContainer,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
-            for (html.Node node in nodes)
-              if (node.children.isNotEmpty &&
-                  node.children.first.localName == 'img')
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: NewsNetworkImage(
-                    uri: node.children.first.attributes['src']!,
-                  ),
-                )
-              else
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                  child: RichText(
-                    text: TextSpan(
-                      children: _getTextSpans(context, node.nodes, textStyle),
+              for (html.Node node in nodes)
+                if (node.children.isNotEmpty &&
+                    node.children.first.localName == 'img')
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: CustomNetworkImage(
+                      uri: node.children.first.attributes['src']!,
                     ),
-                  ),
-                )
-          ],
+                  )
+                else
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                    child: RichText(
+                      text: TextSpan(
+                        children: _getTextSpans(context, node.nodes, textStyle),
+                      ),
+                    ),
+                  )
+            ],
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }

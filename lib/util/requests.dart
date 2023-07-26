@@ -1,12 +1,11 @@
-import 'dart:convert';
-
 import 'package:http/http.dart' as http;
+import 'package:retry/retry.dart';
 
-Future<dynamic> getJson(String uri) async {
-  final r = await http.get(Uri.parse(uri));
+Future<String> get(String url) async {
+  final r = await retry(() => http.get(Uri.parse(url)));
   if (r.statusCode == 200) {
-    return jsonDecode(r.body);
+    return r.body;
   } else {
-    throw Exception('Failed to get $uri');
+    throw Exception('Failed to get $url');
   }
 }

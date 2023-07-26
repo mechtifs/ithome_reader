@@ -1,5 +1,5 @@
-class NewsItem {
-  NewsItem({
+class NewsContent {
+  NewsContent({
     required this.success,
     required this.newsid,
     required this.title,
@@ -36,7 +36,7 @@ class NewsItem {
   late final int commentcount;
   late final String z;
 
-  NewsItem.fromJson(Map<String, dynamic> json) {
+  NewsContent.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     newsid = json['newsid'];
     title = json['title'];

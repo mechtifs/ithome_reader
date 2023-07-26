@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ithome_reader/models/news_list_item.dart';
-import 'package:ithome_reader/pages/news_detail_page.dart';
+import 'package:ithome_reader/pages/detail_page.dart';
+import 'package:ithome_reader/widget/network_image.dart';
 
 class NewsListTile extends StatelessWidget {
   const NewsListTile({
@@ -27,18 +28,7 @@ class NewsListTile extends StatelessWidget {
                 child: ClipRRect(
                   clipBehavior: Clip.antiAlias,
                   borderRadius: BorderRadius.circular(20),
-                  child: Image.network(
-                    item.image,
-                    fit: BoxFit.cover,
-                    loadingBuilder: (BuildContext context, Widget child,
-                        ImageChunkEvent? loadingProgress) {
-                      if (loadingProgress == null) {
-                        return child;
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  ),
+                  child: CustomNetworkImage(uri: item.image),
                 ),
               ),
               const SizedBox(width: 8),
@@ -54,12 +44,13 @@ class NewsListTile extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
-                        DateFormat('yyyy-MM-dd HH:mm:ss')
-                            .format(item.postdate.toLocal()),
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,
-                            )),
+                      DateFormat('yyyy-MM-dd HH:mm:ss')
+                          .format(item.postdate.toLocal()),
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                    ),
                   ],
                 ),
               )
@@ -67,18 +58,16 @@ class NewsListTile extends StatelessWidget {
           ),
         ),
       ),
-      onTap: () => {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DetailPage(
-              newsid: item.newsid,
-              title: item.title,
-              url: item.url,
-            ),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetailPage(
+            newsid: item.newsid,
+            title: item.title,
+            url: item.url,
           ),
         ),
-      },
+      ),
     );
   }
 }
