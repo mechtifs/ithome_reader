@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:ithome_reader/models/news_content.dart';
-import 'package:ithome_reader/util/requests.dart';
+import 'package:ithome_reader/utils/requests.dart';
 
 Future<NewsContent> getNewsContent(int newsid) async {
   final Map<String, dynamic> decoded = jsonDecode(await get(

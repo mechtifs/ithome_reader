@@ -16,6 +16,11 @@ class CommentsView extends StatelessWidget {
       future: getComments(url),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          if (snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text('No comments!'),
+            );
+          }
           return Padding(
             padding: const EdgeInsets.only(top: 8),
             child: ListView.separated(

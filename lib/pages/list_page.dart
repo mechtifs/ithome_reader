@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ithome_reader/api/news_list.dart';
 import 'package:ithome_reader/models/news_list_item.dart';
-import 'package:ithome_reader/widget/multiline_app_bar.dart';
 import 'package:ithome_reader/widget/news_list_tile.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 
 class NewsListPage extends StatefulWidget {
-  const NewsListPage({super.key, required this.title});
-
-  final String title;
+  const NewsListPage({super.key});
 
   @override
   State<NewsListPage> createState() => _NewsListPageState();
@@ -60,7 +57,7 @@ class _NewsListPageState extends State<NewsListPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(widget.title),
+          title: const Text('ITHome Reader'),
           content: const Text('ITHome Reader is a simple reader for ITHome.'),
           actions: [
             SizedBox(
@@ -102,17 +99,32 @@ class _NewsListPageState extends State<NewsListPage> {
       body: NestedScrollView(
         controller: _scrollController,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
-          MultilineAppBar(
-            label: widget.title,
+          SliverAppBar.large(
+            title: const Text('ITHome Reader'),
+            expandedHeight: 240,
             actions: [
               PopupMenuButton(
                 onSelected: (value) {
-                  if (value == 'about') {
-                    _showDialog();
+                  switch (value) {
+                    case 'settings':
+                      Navigator.pushNamed(
+                        context,
+                        '/settings',
+                      );
+                      break;
+                    case 'about':
+                      _showDialog();
+                      break;
                   }
                 },
                 itemBuilder: (BuildContext context) {
                   return [
+                    const PopupMenuItem(
+                      value: 'settings',
+                      child: ListTile(
+                        title: Text('Settings'),
+                      ),
+                    ),
                     const PopupMenuItem(
                       value: 'about',
                       child: ListTile(

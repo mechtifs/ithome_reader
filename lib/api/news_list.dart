@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:ithome_reader/models/news_list_item.dart';
-import 'package:ithome_reader/util/requests.dart';
+import 'package:ithome_reader/utils/requests.dart';
 
 Future<List<NewsListItem>> getNewsList({int timestamp = 0}) async {
   final json = jsonDecode(await get(

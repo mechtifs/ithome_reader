@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:ithome_reader/models/comment_list_item.dart';
-import 'package:ithome_reader/util/requests.dart';
+import 'package:ithome_reader/utils/requests.dart';
 
 Future<String> getCommentSN(String idUrl) async {
   final String r = await get('https://www.ithome.com$idUrl');

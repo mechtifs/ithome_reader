@@ -4,10 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 class CustomNetworkImage extends StatelessWidget {
   const CustomNetworkImage({
     super.key,
-    required this.uri,
+    required this.url,
   });
 
-  final String uri;
+  final String url;
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +15,15 @@ class CustomNetworkImage extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       borderRadius: BorderRadius.circular(20),
       child: CachedNetworkImage(
-        imageUrl: uri,
+        imageUrl: url,
         fit: BoxFit.fill,
         errorWidget: (context, url, error) => const Icon(Icons.error_outline),
-        progressIndicatorBuilder: (context, url, progress) =>
-            Center(child: CircularProgressIndicator(value: progress.progress)),
+        progressIndicatorBuilder: (context, url, progress) => SizedBox(
+          height: 48,
+          child: Center(
+            child: CircularProgressIndicator(value: progress.progress),
+          ),
+        ),
       ),
     );
   }

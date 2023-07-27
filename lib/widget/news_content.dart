@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as html;
 import 'package:html/parser.dart' as html;
+import 'package:photo_view/photo_view.dart';
 import 'package:ithome_reader/models/news_content.dart';
 import 'package:ithome_reader/widget/network_image.dart';
 
@@ -106,37 +108,35 @@ class NewsContent extends StatelessWidget {
                   height: 32,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(24),
-                    child: ListView.builder(
-                      // fade out when overflow
+                    child: ListView.separated(
                       physics: const BouncingScrollPhysics(),
                       scrollDirection: Axis.horizontal,
                       itemCount: tags.length,
+                      separatorBuilder: (context, index) => const SizedBox(
+                        width: 6,
+                      ),
                       itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 6),
-                          child: Material(
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
                             color: Theme.of(context)
                                 .colorScheme
                                 .secondaryContainer,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Center(
-                                child: Text(
-                                  tags[index].keyword,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSecondaryContainer,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Center(
+                              child: Text(
+                                tags[index].keyword,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSecondaryContainer,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
                             ),
                           ),
@@ -152,8 +152,20 @@ class NewsContent extends StatelessWidget {
                   Padding(
                     padding:
                         const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: CustomNetworkImage(
-                      uri: node.children.first.attributes['src']!,
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => HeroPhotoViewRouteWrapper(
+                            tag: node.children.first.attributes['src']!,
+                          ),
+                        ),
+                      ),
+                      child: Hero(
+                        tag: node.children.first.attributes['src']!,
+                        child: CustomNetworkImage(
+                          url: node.children.first.attributes['src']!,
+                        ),
+                      ),
                     ),
                   )
                 else
@@ -170,6 +182,25 @@ class NewsContent extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class HeroPhotoViewRouteWrapper extends StatelessWidget {
+  const HeroPhotoViewRouteWrapper({
+    super.key,
+    required this.tag,
+  });
+
+  final String tag;
+
+  @override
+  Widget build(BuildContext context) {
+    return PhotoView(
+      onTapDown: (context, details, controllerValue) =>
+          Navigator.of(context).pop(),
+      imageProvider: CachedNetworkImageProvider(tag),
+      heroAttributes: PhotoViewHeroAttributes(tag: tag),
     );
   }
 }
